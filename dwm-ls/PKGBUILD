@@ -1,0 +1,45 @@
+# $Id$
+# Mainteiner: Lon Sagisawa <lon.sagisawa@outlook.jp>
+# Original Mainteiner: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: Dag Odenhall <dag.odenhall@gmail.com>
+# Contributor: Grigorios Bouzakis <grbzks@gmail.com>
+
+pkgname=dwm-ls
+pkgver=6.2
+pkgrel=1
+pkgdesc="A dynamic window manager for X"
+url="http://dwm.suckless.org"
+arch=('i686' 'x86_64')
+license=('MIT')
+options=(zipman)
+provides=(dwm)
+conflicts=(dwm)
+depends=('libx11' 'libxinerama' 'libxft' 'freetype2' 'dmenu')
+install=dwm.install
+source=(http://dl.suckless.org/dwm/dwm-$pkgver.tar.gz
+	config.h
+	dwm.desktop
+	dwm-fullgaps-6.2.diff
+	dwm-autostart-20200610-cb3f58a.diff)
+sha256sums=(SKIP SKIP SKIP SKIP SKIP)
+
+prepare() {
+  cd "$srcdir/dwm-$pkgver"
+  cp "$srcdir/config.h" config.h
+  patch --forward -p1 --input=$srcdir/dwm-fullgaps-6.2.diff
+  patch --forward -p1 --input=$srcdir/dwm-autostart-20200610-cb3f58a.diff
+}
+
+build() {
+  cd "$srcdir/dwm-$pkgver"
+  make clean
+  make X11INC=/usr/include/X11 X11LIB=/usr/lib/X11 FREETYPEINC=/usr/include/freetype2
+}
+
+package() {
+  cd "$srcdir/dwm-$pkgver"
+  make PREFIX=/usr DESTDIR="$pkgdir" install
+  install -m644 -D LICENSE "$pkgdir/usr/share/licenses/dwm/LICENSE"
+  install -m644 -D README "$pkgdir/usr/share/doc/dwm/README"
+  install -m644 -D "$srcdir/dwm.desktop" "$pkgdir/usr/share/xsessions/dwm.desktop"
+}
