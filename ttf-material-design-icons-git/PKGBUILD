@@ -1,0 +1,23 @@
+# Maintainer: Andy Kluger <AndyKluger@gmail.com>
+# Contributor: Markus Weimar <mail@markusweimar.de>
+pkgname=ttf-material-design-icons-git
+pkgver=r586.7fedb96
+pkgrel=1
+pkgdesc='Material Design icons'
+arch=('any')
+url='https://materialdesignicons.com'
+license=('custom:OFL')
+makedepends=()
+depends=()
+source=('git+https://github.com/Templarian/MaterialDesign-Font.git')
+sha256sums=('SKIP')
+
+pkgver() {
+  cd MaterialDesign-Font
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+package() {
+  install -d "${pkgdir}/usr/share/fonts/TTF"
+  install -m644 MaterialDesign-Font/MaterialDesignIconsDesktop.ttf "${pkgdir}/usr/share/fonts/TTF/"
+}
