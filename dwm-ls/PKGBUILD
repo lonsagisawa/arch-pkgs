@@ -1,45 +1,72 @@
-# $Id$
-# Mainteiner: Lon Sagisawa <lon.sagisawa@outlook.jp>
-# Original Mainteiner: Sergej Pupykin <pupykin.s+arch@gmail.com>
-# Contributor: Dag Odenhall <dag.odenhall@gmail.com>
-# Contributor: Grigorios Bouzakis <grbzks@gmail.com>
-
 pkgname=dwm-ls
-pkgver=6.2
+_pkgname=dwm
+pkgver=6.2.r8.g61bb8b2
 pkgrel=1
 pkgdesc="A dynamic window manager for X"
 url="http://dwm.suckless.org"
 arch=('i686' 'x86_64')
 license=('MIT')
 options=(zipman)
-provides=(dwm)
-conflicts=(dwm)
-depends=('libx11' 'libxinerama' 'libxft' 'freetype2' 'dmenu')
+depends=('libx11' 'libxinerama' 'libxft')
+makedepends=('git')
 install=dwm.install
-source=(http://dl.suckless.org/dwm/dwm-$pkgver.tar.gz
-	config.h
-	dwm.desktop
-	dwm-fullgaps-6.2.diff
-	dwm-autostart-20200610-cb3f58a.diff)
-sha256sums=(SKIP SKIP SKIP SKIP SKIP)
+provides=('dwm')
+conflicts=('dwm')
+source=(dwm.desktop
+        "$_pkgname::git+http://git.suckless.org/dwm"
+        config.h)
+md5sums=('939f403a71b6e85261d09fc3412269ee'
+         'SKIP'
+         'SKIP') # so you can customize config.h
+_gitname="dwm"
+_sourcedir="$_gitname"
+_makeopts="--directory=$_sourcedir"
+_gitdir=${pkgname%'-git'}
+_startdir=$PWD
+
+pkgver(){
+  cd $_pkgname
+  git describe --long --tags | sed -E 's/([^-]*-g)/r\1/;s/-/./g'
+}
 
 prepare() {
-  cd "$srcdir/dwm-$pkgver"
-  cp "$srcdir/config.h" config.h
-  patch --forward -p1 --input=$srcdir/dwm-fullgaps-6.2.diff
-  patch --forward -p1 --input=$srcdir/dwm-autostart-20200610-cb3f58a.diff
+  echo "Patching"
+  echo "Applying actualfullscreen..."
+  patch --directory="$_sourcedir" -p1 < $_startdir/patches/dwm-actualfullscreen-20191112-cb3f58a.diff
+  echo "Applying attachaside..."
+  patch --directory="$_sourcedir" -p1 < $_startdir/patches/dwm-attachaside-20180126-db22360.diff
+  echo "Applying autostart..."
+  patch --directory="$_sourcedir" -p1 < $_startdir/patches/dwm-autostart-20200610-cb3f58a.diff
+  echo "Applying colorbar..."
+  patch --directory="$_sourcedir" -p1 < $_startdir/patches/dwm-colorbar-6.2.diff
+  echo "Applying nodmenu..."
+  patch --directory="$_sourcedir" -p1 < $_startdir/patches/dwm-nodmenu-6.2.diff
+  echo "Applying restartsig..."
+  patch --directory="$_sourcedir" -p1 < $_startdir/patches/dwm-restartsig-20180523-6.2.diff
+  echo "Applying rotatestack..."
+  patch --directory="$_sourcedir" -p1 < $_startdir/patches/dwm-rotatestack-20161021-ab9571b.diff
+  echo "Applying statuspadding..."
+  patch --directory="$_sourcedir" -p1 < $_startdir/patches/dwm-statuspadding-20150524-c8e9479.diff
+  echo "Applying uselessgap..."
+  patch --directory="$_sourcedir" -p1 < $_startdir/patches/dwm-uselessgap-20200719-bb2e722.diff
+
+  cd $_pkgname
+  if [[ -f "$srcdir/config.h" ]]; then
+    cp -fv "$srcdir/config.h" config.h
+  fi
 }
 
 build() {
-  cd "$srcdir/dwm-$pkgver"
-  make clean
-  make X11INC=/usr/include/X11 X11LIB=/usr/lib/X11 FREETYPEINC=/usr/include/freetype2
+  cd $_pkgname
+  make X11INC=/usr/include/X11 X11LIB=/usr/lib/X11
 }
 
 package() {
-  cd "$srcdir/dwm-$pkgver"
+  cd $_pkgname
   make PREFIX=/usr DESTDIR="$pkgdir" install
-  install -m644 -D LICENSE "$pkgdir/usr/share/licenses/dwm/LICENSE"
-  install -m644 -D README "$pkgdir/usr/share/doc/dwm/README"
-  install -m644 -D "$srcdir/dwm.desktop" "$pkgdir/usr/share/xsessions/dwm.desktop"
+  install -m644 -D LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -m644 -D README "$pkgdir/usr/share/doc/$pkgname/README"
+  install -m644 -D ../dwm.desktop "$pkgdir/usr/share/xsessions/dwm.desktop"
 }
+
+# vim:set ts=2 sw=2 et:
