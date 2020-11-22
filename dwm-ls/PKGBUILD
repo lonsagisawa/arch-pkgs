@@ -7,7 +7,7 @@ url="http://dwm.suckless.org"
 arch=('i686' 'x86_64')
 license=('MIT')
 options=(zipman)
-depends=('libx11' 'libxinerama' 'libxft')
+depends=('libx11' 'libxinerama' 'libxft' 'rofi' 'alacritty' 'ttf-nerd-fonts-symbols')
 makedepends=('git')
 install=dwm.install
 provides=('dwm')
@@ -39,6 +39,8 @@ prepare() {
   patch --directory="$_sourcedir" -p1 < $_startdir/patches/dwm-autostart-20200610-cb3f58a.diff
   echo "Applying colorbar..."
   patch --directory="$_sourcedir" -p1 < $_startdir/patches/dwm-colorbar-6.2.diff
+  echo "Applying fixborders..."
+  patch --directory="$_sourcedir" -p1 < $_startdir/patches/dwm-fixborders-6.2.diff
   echo "Applying nodmenu..."
   patch --directory="$_sourcedir" -p1 < $_startdir/patches/dwm-nodmenu-6.2.diff
   echo "Applying restartsig..."
