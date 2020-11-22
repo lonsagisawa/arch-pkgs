@@ -7,11 +7,10 @@ static const unsigned int snap      = 16;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const int horizpadbar        = 2;        /* horizontal padding for statusbar */
-static const int vertpadbar         = 6;        /* vertical padding for statusbar */
-static const char *fonts[]          = { "Sarasa Term J Semibold:size=10", 
-                                        "Font Awesome 5 Brands Regular:size=10",
-                                        "Font Awesome 5 Free Regular:size=10",
-                                        "Font Awesome 5 Free Solid:size=10" }; /* Font Awesome for icons */
+static const int vertpadbar         = 8;        /* vertical padding for statusbar */
+static const char *fonts[]          = { "Inter:size=10",
+					"Sarasa UI J:size=10", 
+					"Symbols Nerd Font:style=2048-em,size=10" }; /* Nerd Fonts symbols for icons */
 static const char dmenufont[]       = "monospace:size=10";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
@@ -80,7 +79,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static const char *dmenucmd[] = { "rofi", "-show", "drun", NULL };
-static const char *termcmd[]  = { "st", "-e", "fish", NULL };
+static const char *termcmd[]  = { "alacritty", NULL };
 
 /* Keybindings
    Heavily inspired from defaults of bspwm and awesomewm */
