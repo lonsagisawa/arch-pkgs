@@ -1,3 +1,5 @@
+#include <X11/XF86keysym.h>
+
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
@@ -8,8 +10,8 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const int horizpadbar        = 2;        /* horizontal padding for statusbar */
 static const int vertpadbar         = 8;        /* vertical padding for statusbar */
-static const char *fonts[]          = { "Inter:size=10",
-					"Sarasa UI J:size=10", 
+static const char *fonts[]          = { "Inter Medium:size=10",
+					"Sarasa UI J Semibold:size=10", 
 					"Symbols Nerd Font:style=2048-em,size=10" }; /* Nerd Fonts symbols for icons */
 static const char dmenufont[]       = "monospace:size=10";
 static const char col_gray1[]       = "#222222";
@@ -80,6 +82,12 @@ static const Layout layouts[] = {
 /* commands */
 static const char *dmenucmd[] = { "rofi", "-show", "drun", NULL };
 static const char *termcmd[]  = { "alacritty", NULL };
+static const char *volumeupcmd[] = { "/home/lon/bin/volumeControl", "up", NULL };
+static const char *volumedowncmd[] = { "/home/lon/bin/volumeControl", "down", NULL };
+static const char *mutecmd[] = { "/home/lon/bin/volumeControl", "mute", NULL };
+static const char *brightnessupcmd[] = { "/home/lon/bin/brightnessControl", "up", NULL };
+static const char *brightnessdowncmd[] = { "/home/lon/bin/brightnessControl", "down", NULL };
+
 
 /* Keybindings
    Heavily inspired from defaults of bspwm and awesomewm */
@@ -153,6 +161,12 @@ static Key keys[] = {
 	   Restart: Super-Shift-r */
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 	{ MODKEY|ShiftMask,             XK_r,      quit,           {1} }, 
+	/* Volume Control */
+	{ 0,                            XF86XK_AudioRaiseVolume, spawn, {.v = volumeupcmd} },
+	{ 0,                            XF86XK_AudioLowerVolume, spawn, {.v = volumedowncmd} },
+	{ 0,                            XF86XK_AudioMute, spawn, {.v = mutecmd} },
+	{ 0,                            XF86XK_MonBrightnessUp, spawn, {.v = brightnessupcmd} },
+	{ 0,                            XF86XK_MonBrightnessDown, spawn, {.v = brightnessdowncmd} },
 };
 
 /* button definitions */
